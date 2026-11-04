@@ -1,0 +1,10 @@
+# OS / editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Personal data exports (keep your grades out of the public repo)
+grade-ledger-*.json
+*.backup.json
