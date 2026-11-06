@@ -29,6 +29,7 @@
       </div>
       <div class="toolbar">
         <span id="saved" class="saved" role="status" aria-live="polite"></span>
+        <button type="button" class="btn btn-ghost" id="sync-btn" hidden></button>
         <button type="button" class="btn btn-ghost" id="export-btn">Export</button>
         <button type="button" class="btn btn-ghost" id="import-btn">Import</button>
         <input type="file" id="import-file" accept="application/json,.json" hidden>
@@ -60,10 +61,13 @@
   </main>
 
   <footer class="wrap footer">
-    <p>Your data stays in this browser (localStorage). Use Export to back it up.</p>
+    <p>Your data is saved in this browser, and also in your private account if you sign in to sync. Use Export to back it up.</p>
   </footer>
 
   <script src="curriculum.js"></script>
   <script src="app.js"></script>
+  <script src="vendor/supabase.js"></script>
+  <script src="sync-config.js"></script>
+  <script src="sync.js"></script>
 </body>
 </html>

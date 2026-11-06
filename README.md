@@ -11,6 +11,19 @@ Plain HTML, CSS and vanilla JavaScript: no frameworks, no build step.
 | `styles.css` | All styling (light/dark themes via CSS variables) |
 | `app.js` | App logic: GPA math, plan matching, rendering, storage |
 | `curriculum.js` | **The degree plan as a data array: edit this when the plan changes** |
+| `sync.js`, `sync-config.js` | Optional account sync with Command Center |
+| `vendor/supabase.js` | Supabase client library |
+
+## Sync with Command Center
+
+Optional. Fill in `sync-config.js` with the same Project URL and publishable key as Command Center, then
+use the sync button in the toolbar to sign in. Without those values, the app stays local-only.
+
+- `sync.js` copies your record to your private Supabase account and pulls newer copies from other devices.
+- Command Center shows the summary this app calculates, so grades are only ever entered here.
+- The newest edit replaces the whole record. If local edits get replaced, they are kept in this browser's localStorage under `eceTracker.data.backup`.
+- Both config values are safe in a public repository. Never add the `service_role` or secret key.
+- `vendor/supabase.js` is an unmodified copy of `@supabase/supabase-js`, so there is still no build step.
 
 ## Run it locally
 

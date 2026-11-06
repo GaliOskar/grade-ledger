@@ -576,3 +576,17 @@ fieldset > .btn { justify-self: start; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
+
+/* Account sync */
+.sync-dialog {
+  width: min(420px, calc(100vw - 32px)); padding: 20px; border: 1px solid var(--line); border-radius: 14px;
+  background: var(--surface); color: var(--ink);
+}
+.sync-dialog::backdrop { background: rgba(0, 0, 0, .55); }
+.sync-form { display: flex; flex-direction: column; gap: 12px; }
+.sync-form[hidden] { display: none; }
+.sync-form h2, .sync-form p { margin: 0; }
+.sync-form .field { display: flex; flex-direction: column; gap: 4px; }
+.sync-form input { width: 100%; font-size: 16px; }
+.sync-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+#sync-btn[hidden] { display: none; }

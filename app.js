@@ -178,6 +178,7 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       el.textContent = 'Saved';
       el.classList.remove('error');
+      if (window.LedgerSync) window.LedgerSync.onLocalChange();
     } catch (e) {
       el.textContent = 'Not saved: browser storage unavailable';
       el.classList.add('error');
@@ -1257,10 +1258,67 @@
     try { if (!localStorage.getItem(STORAGE_KEY)) localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
   }
 
-  // Exposed for testing in the console.
+  // ---------------------------------------------------------------------------
+  // Account sync (see sync.js)
+  // ---------------------------------------------------------------------------
+  const finite = (n) => (Number.isFinite(n) ? n : null);
+
+  // The results Command Center displays. They come from the functions behind this page's own
+  // numbers, so the two apps can't disagree about retakes, minimum grades, or GPA.
+  function syncSummary() {
+    const an = analyze();
+    const st = stats(an);
+    return {
+      version: 1,
+      gpa: st.gpa,
+      gpaCredits: st.gpaCredits,
+      earned: st.earned,
+      total: st.total,
+      ipCount: st.ipCount,
+      ipEcts: st.ipEcts,
+      semesters: st.sems.map((s) => ({
+        name: s.sem.name,
+        gpa: s.gpa,
+        cumulative: s.cum,
+        courses: s.sem.courses.map((c) => {
+          const b = breakdown(c);
+          const inf = an.info.get(c.id);
+          return {
+            id: c.id,
+            code: c.code,
+            title: c.title,
+            ects: ectsOf(c),
+            grade: c.grade,
+            superseded: !!(inf && inf.superseded),
+            minGrade: inf ? inf.min : null,
+            average: b.avg,
+            graded: b.locked,
+            projected: b.projected,
+            assessments: b.items.map((a) => ({ name: a.name, weight: finite(num(a.weight)), score: finite(num(a.score)) })),
+          };
+        }),
+      })),
+    };
+  }
+
+  // Replaces this browser's record with the account copy. Returns false if the copy is invalid.
+  function applySynced(d) {
+    if (validateData(d)) return false;
+    state = normalize(d);
+    ui.confirmDelete = null;
+    ui.addingSlot = null;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* shown on next save */ }
+    render();
+    return true;
+  }
+
+  // Used by sync.js, and for testing in the console.
   window.GradeLedger = {
     get state() { return state; }, analyze: () => analyze(), stats: () => stats(analyze()),
     breakdown, letterForPct, GRADE_POINTS,
+    syncPayload: () => ({ state: JSON.parse(JSON.stringify(state)), summary: syncSummary() }),
+    applySynced,
+    flash,
   };
 
   init();
